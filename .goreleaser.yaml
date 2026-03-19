@@ -1,0 +1,51 @@
+version: 2
+
+project_name: gbatch
+
+before:
+  hooks:
+    - go mod tidy
+    - go vet ./...
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+      - -X github.com/joshuakto/gbatch/cmd.Version={{.Version}}
+
+archives:
+  - format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
+
+brews:
+  - repository:
+      owner: joshuakto
+      name: homebrew-tap
+      token: "{{ .Env.HOMEBREW_TAP_GITHUB_TOKEN }}"
+    directory: Formula
+    homepage: "https://github.com/joshuakto/gbatch"
+    description: "Lightweight job scheduler CLI for Google Cloud"
+    license: "MIT"
+    install: |
+      bin.install "gbatch"
+    test: |
+      assert_match "gBatch", shell_output("#{bin}/gbatch --help")
