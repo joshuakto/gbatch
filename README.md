@@ -20,10 +20,10 @@ gbatch submit --cpus 8 --mem 32G --mount gs://my-data:/data align.sh
 ## Install
 
 ```bash
-brew install joshuakto/tap/gbatch
-# or
 go install github.com/joshuakto/gbatch@latest
 ```
+
+Or download a binary from [GitHub Releases](https://github.com/joshuakto/gbatch/releases).
 
 ## Commands
 
